@@ -19,10 +19,8 @@ class FullyConnectedClassifier(nn.Module):
         return fc3
 
 
-def train(model, train_data, nb_epochs, batch_size, learning_rate):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f"{device = }")
-    model = model.to(device)
+def train(model, device, train_data, nb_epochs, batch_size, learning_rate):
+    print(f"Training on device: {device}")
 
     loss_values = []
     epoch_values = []
