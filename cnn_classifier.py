@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from torch.optim import SGD
 from torch.utils.data import DataLoader
 
+
 class ConvolutionalClassifier(nn.Module):
     def __init__(self):
         super().__init__()
@@ -31,42 +32,44 @@ class ConvolutionalClassifier(nn.Module):
 
         fc1 = F.relu(self.fc1(flat))
         fc2 = F.relu(self.fc2(fc1))
-        output = F.sigmoid(self.fc3(fc2))
+        fc3 = self.fc3(fc2)
 
-        return output
+        return fc3
 
+    def predict(self, x):
+        return F.softmax(self.forward(x), dim=1).argmax(dim=1)
 
-def train(model, device, train_data, nb_epochs, batch_size, learning_rate):
-    print(f"Training on device: {device}")
+    def train(self, device, train_data, nb_epochs, batch_size, learning_rate):
+        print(f"Training on device: {device}")
 
-    loss_values = []
-    epoch_values = []
+        loss_values = []
+        epoch_values = []
 
-    data_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
-    criterion = nn.CrossEntropyLoss()
-    optimizer = SGD(model.parameters(), lr=learning_rate)
+        data_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+        criterion = nn.CrossEntropyLoss()
+        optimizer = SGD(self.parameters(), lr=learning_rate)
 
-    for epoch in range(nb_epochs):
-        running_loss = 0.
-        for batch in data_loader:
-            x = batch[0].to(device)
-            y = batch[1].to(device)
+        for epoch in range(nb_epochs):
+            running_loss = 0.
+            for batch in data_loader:
+                x = batch[0].to(device)
+                y = batch[1].to(device)
 
-            optimizer.zero_grad()
+                optimizer.zero_grad()
 
-            y_pred = model(x)
-            loss = criterion(y_pred, y)
-            loss.backward()
+                y_hat = self.forward(x)
+                loss = criterion(y_hat, y)
+                loss.backward()
 
-            optimizer.step()
+                optimizer.step()
 
-            with torch.no_grad():
-                running_loss += loss.item() * x.size(0)
+                with torch.no_grad():
+                    running_loss += loss.item() * x.size(0)
 
-        epoch_loss = running_loss / len(train_data)
-        epoch_values.append(epoch)
-        loss_values.append(epoch_loss)
-        if epoch % 10 == 0:
-            print(f'[epoch {epoch}] epoch loss = {epoch_loss:.4f}')
+            epoch_loss = running_loss / len(train_data)
+            epoch_values.append(epoch)
+            loss_values.append(epoch_loss)
+            if epoch % 10 == 0:
+                print(f'[epoch {epoch}] epoch loss = {epoch_loss:.4f}')
 
-    return epoch_values, loss_values
+        return epoch_values, loss_values
