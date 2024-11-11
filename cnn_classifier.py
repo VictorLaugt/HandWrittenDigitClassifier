@@ -46,7 +46,7 @@ class ConvolutionalClassifier(nn.Module):
         epoch_values = []
 
         data_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
-        criterion = nn.CrossEntropyLoss()
+        criterion = nn.CrossEntropyLoss(reduction='mean')
         optimizer = SGD(self.parameters(), lr=learning_rate)
 
         for epoch in range(nb_epochs):

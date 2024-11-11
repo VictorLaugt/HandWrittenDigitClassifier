@@ -28,7 +28,7 @@ class FullyConnectedClassifier(nn.Module):
         epoch_values = []
 
         data_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
-        criterion = nn.CrossEntropyLoss()
+        criterion = nn.CrossEntropyLoss(reduction='mean')
         optimizer = SGD(self.parameters(), lr=learning_rate)
 
         for epoch in range(nb_epochs):
@@ -46,7 +46,7 @@ class FullyConnectedClassifier(nn.Module):
                 optimizer.step()
 
                 with torch.no_grad():
-                    running_loss += loss.item()
+                    running_loss += loss.item() * x.size(0)
 
             epoch_loss = running_loss / len(train_data)
             epoch_values.append(epoch)
