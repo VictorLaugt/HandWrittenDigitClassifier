@@ -19,7 +19,7 @@ class FullyConnectedClassifier(nn.Module):
         return fc3
 
     def predict(self, x):
-        return F.softmax(self.forward(x), dim=1).argmax(dim=1)
+        return self(x).argmax(dim=1)
 
     def train(self, device, train_data, nb_epochs, batch_size, learning_rate):
         print(f"Training on device: {device}")
@@ -39,7 +39,7 @@ class FullyConnectedClassifier(nn.Module):
 
                 optimizer.zero_grad()
 
-                y_hat = self.forward(x)
+                y_hat = self(x)
                 loss = criterion(y_hat, y)
                 loss.backward()
 
