@@ -21,7 +21,7 @@ class FullyConnectedClassifier(nn.Module):
     def predict(self, x):
         return self(x).argmax(dim=1)
 
-    def train(self, device, train_data, nb_epochs, batch_size, learning_rate):
+    def training_loop(self, device, train_data, nb_epochs, batch_size, learning_rate):
         print(f"Training on device: {device}")
 
         loss_values = []
