@@ -62,7 +62,7 @@ def get_test_data(root: Path, restrict: int = None):
 def show_sample(images, labels, nb_sample: int = 3):
     """
     preconditions:
-        images.size() == (N, 1, 28*28)
+        images.size() == (N, 1, 28, 28)
         labels.size() == (N,)
     """
     assert images.size(0) == labels.size(0)
